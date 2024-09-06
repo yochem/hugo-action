@@ -1,0 +1,52 @@
+name: 'Hugo'
+description: 'Install Hugo and build your website'
+
+inputs:
+  extended:
+    description: 'Whether to install the extended version of Hugo'
+    default: false
+    required: false
+  hugo-version:
+    description: 'The Hugo version to install'
+    default: 'latest'
+    required: false
+  args:
+    description: 'Arguments to the Hugo CLI'
+    default: '--gc'
+    required: false
+  source:
+    description: 'Path to root of the source of your Hugo site'
+    default: '.'
+    required: false
+  destination:
+    description: 'Output directory'
+    default: './public'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build this action
+      run: go build install-hugo.go
+      shell: bash
+
+    - name: Install Hugo
+      run: ./install-hugo
+      shell: bash
+      env:
+        HUGO_VERSION: ${{ inputs.hugo-version }}
+        HUGO_EXTENDED: ${{ inputs.extended }}
+
+    - name: Build with Hugo
+      run: |
+        hugo \
+          ${{ inputs.args }} \
+          --source ${{ inputs.source }} \
+          --destination ${{ inputs.destination }}
+      shell: bash
+      env:
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+
+    - name: Cleanup Hugo
+      run: rm ./hugo
