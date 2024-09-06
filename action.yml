@@ -27,7 +27,7 @@ runs:
   using: "composite"
   steps:
     - name: Build this action
-      run: go build install-hugo.go
+      run: go build -o install-hugo install-hugo.go
       shell: bash
 
     - name: Install Hugo
