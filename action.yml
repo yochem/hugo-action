@@ -23,16 +23,18 @@ inputs:
     default: './public'
     required: false
 
+defaults:
+  run:
+    shell: bash
+
 runs:
   using: "composite"
   steps:
     - name: Build this action
       run: go build install-hugo.go
-      shell: bash
 
     - name: Install Hugo
       run: ./install-hugo
-      shell: bash
       env:
         HUGO_VERSION: ${{ inputs.hugo-version }}
         HUGO_EXTENDED: ${{ inputs.extended }}
@@ -43,7 +45,6 @@ runs:
           ${{ inputs.args }} \
           --source ${{ inputs.source }} \
           --destination ${{ inputs.destination }}
-      shell: bash
       env:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
